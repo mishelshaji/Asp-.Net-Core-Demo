@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ToDo>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="flex justify-content-end">
+    <a asp-action="Create" asp-controller="ToDo" class="btn btn-success">+ New ToDo</a>
+</div>
+
+<h1>ToDo List</h1>
+
+@if(Model.Any())
+{
+        <table class="table table-striped table-hover">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Complete On</th>
+            <th>Status</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@(item.Description == default? "No Description": item.Description)</td>
+                <td>@item.CompleteOn</td>
+                <td>
+                    @if (item.HasCompleted)
+                    {
+                        <a asp-action="UpdateStatus" asp-route-id="@item.Id" class="text-danger">Mark Pending</a>
+                    }
+                    else
+                    {
+                        <a asp-action="UpdateStatus" asp-route-id="@item.Id" class="text-danger">Mark Completed</a>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}
+else{
+    <div class="alert alert-info text-center" style="font-weight: bold;">
+        No matching records found.
+    </div>
+}
