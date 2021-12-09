@@ -1,0 +1,42 @@
+﻿@page "/todo/create"
+@inject ApplicationDbContext _db
+
+<h3>CreateToDo</h3>
+
+<div class="container">
+    <EditForm Model="model" OnValidSubmit="SaveData">
+        <DataAnnotationsValidator/>
+        <div class="form-group">
+            <label>Name</label>
+            <InputText @bind-Value="model.Name" class="form-control"></InputText>
+            <ValidationMessage For="@(()=>model.Name)"></ValidationMessage>
+        </div>
+        <div class="form-group">
+            <label>Complete On</label>
+            <InputDate @bind-Value="model.CompleteOn" class="form-control"></InputDate>
+            <ValidationMessage For="@(()=>model.CompleteOn)"></ValidationMessage>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <InputTextArea @bind-Value="model.Description" class="form-control"></InputTextArea>
+            <ValidationMessage For="@(()=>model.Description)"></ValidationMessage>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </EditForm>
+</div>
+
+<h1>@data</h1>
+<input @bind-value="data" />
+
+@code {
+    ToDo model = new ToDo();
+
+    private string data = string.Empty;
+
+    private async Task SaveData()
+    {
+        await _db.ToDos.AddAsync(model);
+        await _db.SaveChangesAsync();
+        model = new();
+    }
+}

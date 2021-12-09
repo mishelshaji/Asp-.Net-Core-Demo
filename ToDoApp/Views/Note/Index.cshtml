@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Note>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Notes</h1>
+
+<div class="container">
+    <table class="table">
+        <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Note</th>
+            <th>Action</th>
+        </tr>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Category.Name</td>
+                <td>@item.Body</td>
+                <td>
+                    <div class="btn btn-group">
+                        <a class="btn btn-primary">Edit</a>
+                        <a class="btn btn-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

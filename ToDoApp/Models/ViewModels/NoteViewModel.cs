@@ -18,6 +18,7 @@ namespace ToDoApp.Models.ViewModels
 
         [Display(Name = "category")]
         public int CategoryId { get; set; }
+
         public IEnumerable<Category> Categories { get; set; }
     }
 }

@@ -17,7 +17,8 @@ namespace ToDoApp.Controllers
         // GET: NoteController
         public async Task<ActionResult> Index()
         {
-            return View();
+            var notes = await _db.Notes.Include(m=>m.Category).ToListAsync();
+            return View(notes);
         }
 
         // GET: NoteController/Details/5
@@ -46,10 +47,15 @@ namespace ToDoApp.Controllers
         // POST: NoteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromForm] NoteViewModel model)
+        public async Task<IActionResult> Create(NoteViewModel model)
         {
+            ModelState.Remove(nameof(model.Categories));
             var categories = await _db.Categories.ToListAsync();
             model.Categories = categories;
+
+            if (!categories.Any(m=>m.Id == model.CategoryId))
+                ModelState.AddModelError(nameof(model.CategoryId), "Invalid category");
+
             if (!ModelState.IsValid)
             {
                 return View(model);
