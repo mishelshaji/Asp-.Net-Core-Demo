@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using AspStore.Models;
 
 namespace AspStore.Data
 {
@@ -10,5 +11,6 @@ namespace AspStore.Data
         {
 
         }
+        public DbSet<AspStore.Models.Category> Category { get; set; }
     }
 }

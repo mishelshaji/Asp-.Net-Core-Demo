@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+using AspStore.Dependencies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +27,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Dependency Injection Demo
+builder.Services.AddScoped<ScopedTester>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,7 +46,16 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+      name: "areas",
+      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+});
 
 app.MapControllerRoute(
     name: "default",

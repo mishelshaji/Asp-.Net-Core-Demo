@@ -1,4 +1,5 @@
-﻿using AspStore.Models;
+﻿using AspStore.Dependencies;
+using AspStore.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,10 +8,14 @@ namespace AspStore.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IMessageService _test;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, 
+            IMessageService test,
+            ScopedTester s)
         {
             _logger = logger;
+            _test = test;
         }
 
         public IActionResult Index()
@@ -27,6 +32,11 @@ namespace AspStore.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Test()
+        {
+            return Content(_test.GetGreetingMessage());
         }
     }
 }

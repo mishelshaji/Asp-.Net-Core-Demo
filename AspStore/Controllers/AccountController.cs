@@ -7,17 +7,51 @@ namespace AspStore.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         public AccountController(
             ApplicationDbContext db,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
             _db = db;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Login([FromForm]LoginViewModel model)
+        {
+            if(!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "No matching accounts found");
+                return View(model);
+            }
+
+            var signinStatus = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: true, lockoutOnFailure: true);
+            if (signinStatus.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else if (signinStatus.IsLockedOut)
+            {
+                ModelState.AddModelError(string.Empty, "Your account is blocked. Please try after some time");
+                return View(model);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login details");
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -59,6 +93,12 @@ namespace AspStore.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
             return View(model);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return LocalRedirect("/");
         }
     }
 }
