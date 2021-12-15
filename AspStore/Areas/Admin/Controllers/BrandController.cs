@@ -45,32 +45,12 @@ namespace AspStore.Areas.Admin.Controllers
 
             var uploadPath = Path.Combine("uploads", "brand", "logos");
             var absolutePath = Path.Combine(_webHostEnvironment.WebRootPath, uploadPath);
-            var uniqueFileName = Guid.NewGuid().ToString();
-            var fileExtension = Path.GetExtension(model.Logo.FileName);
-            if(!(fileExtension.Equals(".jpg") || fileExtension.Equals(".png")))
-            {
-                ModelState.AddModelError(nameof(model.Logo), "Invalid file type");
-                return View(model);
-            }
-
-            var uploadTo = Path.Combine(absolutePath, uniqueFileName + fileExtension);
-            try
-            {
-                Directory.CreateDirectory(absolutePath);
-                using (var stream = new FileStream(uploadTo, FileMode.Create))
-                {
-                    await model.Logo.CopyToAsync(stream);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            var savedFileName = await model.Logo.SaveFileToDiskAsync(absolutePath);
 
             await _db.Brands.AddAsync(new Brand()
             {
                 Description = model.Description,
-                Logo = Path.Combine(uploadPath, uniqueFileName + fileExtension).Replace("\\", "/"),
+                Logo = Path.Combine(uploadPath, savedFileName).Replace("\\", "/"),
                 Name = model.Name,
                 OffictalWebsite = model.OffictalWebsite,
                 Slug = model.Slug,
