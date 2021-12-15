@@ -1,4 +1,3 @@
-using AspStore.Dependencies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +26,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Dependency Injection Demo
-builder.Services.AddScoped<ScopedTester>();
-builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<SyncAppData>();
 
 var app = builder.Build();
 

@@ -16,4 +16,6 @@ public class Category
     [StringLength(maximumLength: 50, MinimumLength = 2)]
     [SlugValidator]
     public string Slug { get; set; }
+
+    public IEnumerable<Product> Products { get; set; }
 }

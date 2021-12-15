@@ -85,6 +85,7 @@ namespace AspStore.Controllers
             var userCreatedStatus = await _userManager.CreateAsync(user, model.Password);
             if (userCreatedStatus.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, UserRoles.User);
                 return RedirectToAction(nameof(Login));
             }
 
