@@ -20,4 +20,8 @@
     <Folder Include="wwwroot\uploads\brand\logos\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AspStore.Models\AspStore.Models.csproj" />
+  </ItemGroup>
+
 </Project>
