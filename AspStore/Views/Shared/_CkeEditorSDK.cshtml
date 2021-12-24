@@ -1,0 +1,18 @@
+﻿<script src="~/lib/cke-editor/ckeditor.js"></script>
+<script>
+function buildCkeEditor(elementId){
+	var element = document.getElementById(elementId);
+    ClassicEditor.create(element, {
+		licenseKey: '',
+	})
+	.then(editor => {
+		window.editor = editor;
+	})
+	.catch(error => {
+		console.error('Oops, something went wrong!');
+		console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+		console.warn('Build id: s60i0gu4deb-c2njfmev0hoq');
+		console.error(error);
+	});
+}
+</script>

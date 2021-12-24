@@ -1,4 +1,9 @@
 ﻿@inject SignInManager<ApplicationUser> _signinManager
+@inject UserManager<ApplicationUser> _userManager
+
+@{
+    var user = await _userManager.GetUserAsync(User);
+}
 @using System.Security.Claims;
 <!DOCTYPE html>
 <html lang="en">
@@ -20,14 +25,31 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         @if (_signinManager.IsSignedIn(User))
                         {
+                            @if(await _userManager.IsInRoleAsync(await _userManager.GetUserAsync(User), UserRoles.Admin))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Categoty" asp-action="Index">Category</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Brand" asp-action="Index">Brand</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (_signinManager.IsSignedIn(User))
+                        {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <a class="nav-link text-dark text-success" asp-area="" asp-controller="Home" asp-action="Index">
                                     Welcome @User.FindFirstValue(ClaimTypes.Email)
                                 </a>
                             </li>

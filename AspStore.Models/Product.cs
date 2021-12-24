@@ -56,5 +56,7 @@ namespace AspStore.Models
         public string ApplicationUserId { get; set; }
         [ForeignKey(nameof(ApplicationUserId))]
         public ApplicationUser ApplicationUser { get; set; }
+
+        public IEnumerable<Cart> Cart { get; set; }
     }
 }

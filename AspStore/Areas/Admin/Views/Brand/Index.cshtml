@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Brand>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-center">Brands</h1>
+
+<div class="container">
+    <div class="d-flex">
+        <a asp-action="Create" class="ml-auto">New Brand</a>
+    </div>
+    <table class="table table-striped">
+        <tr>
+            <th>Logo</th>
+            <th>Name</th>
+            <th>Website</th>
+            <th>Support Email</th>
+            <th>Action</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@item.Logo.GetAsFileUploadPath()" style="height: 50px; width: 50px;"/>
+                </td>
+                <td>@item.Name</td>
+                <td>
+                    <a href="@item.OffictalWebsite" target="_blank">@item.OffictalWebsite</a>
+                </td>
+                <td>
+                    <a href="mailto:@item.SupportEmail" target="_blank">@item.SupportEmail</a>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

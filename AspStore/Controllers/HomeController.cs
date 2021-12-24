@@ -7,15 +7,22 @@ namespace AspStore.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _db;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            ApplicationDbContext db
+           )
         {
             _logger = logger;
+            _db = db;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var products = await _db.Products.Include(m=>m.Category).Include(m=>m.Brand)
+                .OrderBy(m=>m.CreatedOn).ToListAsync();
+            return View(products);
         }
 
         public IActionResult Privacy()
@@ -27,6 +34,12 @@ namespace AspStore.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Test()
+        {
+            ViewBag.Message = "@Datetime.Now";
+            return View();
         }
     }
 }

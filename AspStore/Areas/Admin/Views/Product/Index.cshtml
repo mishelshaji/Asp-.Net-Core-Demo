@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-center">Products</h1>
+
+<div class="container">
+    <div class="d-flex">
+        <a asp-action="Create" class="ml-auto">New Product</a>
+    </div>
+    <table class="table table-striped">
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Action</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@item.Image.GetAsFileUploadPath()" style="height: 50px; width: 50px;"/>
+                </td>
+                <td>@item.Name</td>
+                <td>
+                    @item.Category.Name
+                </td>
+                <td>
+                    @item.Brand.Name
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

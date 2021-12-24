@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Cart>
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<div class="container">
+    <table class="table">
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@item.Product.Image.GetAsFileUploadPath()" height="50"/>
+                </td>
+                <td>@item.Product.Name</td>
+                <td>
+                    <div class="btn-group">
+                        <a asp-action="UpdateQuantity" asp-route-id="@item.Id" asp-route-task="sub" class="btn btn-danger">-</a>
+                        <button class="btn btn-light">@item.Quantity</button>
+                        <a asp-action="UpdateQuantity" asp-route-id="@item.Id" asp-route-task="add" class="btn btn-success">+</a>
+                    </div>
+                </td>
+                <td>@(item.Product.SalesPrice * item.Quantity)</td>
+            </tr>
+        }
+    </table>
+    <div class="row">
+        <div class="col-sm-6 offset-sm-6" style="background-color: #fafafa;">
+            <h4>Total Items: @Model.Count()</h4>
+            <h4>Total Amount: @ViewBag.TotalAmount</h4>
+        </div>
+    </div>
+</div>

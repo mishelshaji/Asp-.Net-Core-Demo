@@ -12,5 +12,7 @@ namespace AspStore.Models
         [Required]
         [StringLength(maximumLength: 25, MinimumLength = 1)]
         public string LastName { get; set; }
+
+        public IEnumerable<Cart> Carts { get; set; }
     }
 }

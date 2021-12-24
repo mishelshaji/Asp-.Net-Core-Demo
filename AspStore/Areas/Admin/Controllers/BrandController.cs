@@ -17,9 +17,10 @@ namespace AspStore.Areas.Admin.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var data = await _db.Brands.ToListAsync();
+            return View(data);
         }
 
         [HttpGet]
@@ -56,6 +57,93 @@ namespace AspStore.Areas.Admin.Controllers
                 Slug = model.Slug,
                 SupportEmail = model.SupportEmail,
             });
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(this.Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            if (id == default)
+                return NotFound();
+
+            var brand = await _db.Brands.FindAsync(id);
+            if (brand == null)
+                return NotFound();
+
+            var model = new BrandEditViewModel()
+            {
+                Description = brand.Description,
+                ExistingLogo = brand.Logo.GetAsFileUploadPath(),
+                Name = brand.Name,
+                OffictalWebsite = brand.OffictalWebsite,
+                Slug = brand.Slug,
+                SupportEmail = brand.SupportEmail,
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([FromRoute]int id, [FromForm]BrandEditViewModel model)
+        {
+            if (id == default)
+                return NotFound();
+
+            var brand = await _db.Brands.FindAsync(id);
+            if (brand == null)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var uploadPath = Path.Combine("uploads", "brand", "logos");
+            var absolutePath = Path.Combine(_webHostEnvironment.WebRootPath, uploadPath);
+            var savedFileName = string.Empty;
+            if (model.Logo != default)
+            {
+                var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, brand.Logo);
+                savedFileName = await model.Logo.SaveFileToDiskAsync(absolutePath);
+                System.IO.File.Delete(oldFilePath);
+                brand.Logo = Path.Combine(uploadPath, savedFileName);
+            }
+
+            await TryUpdateModelAsync(brand, string.Empty,
+                m => m.Name,
+                m => m.Description,
+                m => m.Slug,
+                m => m.OffictalWebsite,
+                m => m.SupportEmail);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(this.Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id == default)
+                return NotFound();
+
+            var brand = await _db.Brands.FindAsync(id);
+            if (brand == null)
+                return NotFound();
+
+            return View(brand);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName(nameof(Delete))]
+        public async Task<IActionResult> DeleteConfirmation(int id)
+        {
+            if (id == default)
+                return NotFound();
+
+            var brand = await _db.Brands.FindAsync(id);
+            if (brand == null)
+                return NotFound();
+
+            _db.Remove(brand);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(this.Index));
         }

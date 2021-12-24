@@ -1,8 +1,27 @@
-﻿@{
+﻿@model IEnumerable<Product>
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-sm-4">
+                <div class="card">
+                    <img src="@item.Image.GetAsFileUploadPath()" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <div class="d-flex justify-content-end">
+                            <a asp-action="Add" asp-controller="Cart" asp-area="" asp-route-id="@item.Id" class="btn btn-primary">
+                                <span class="material-icons">shopping_cart</span>
+                                Add to cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
